@@ -5,11 +5,8 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('Seeding database...');
 
-  // Clear existing data
   await prisma.listing.deleteMany();
   await prisma.user.deleteMany();
-
-  // Users
   const u1 = await prisma.user.create({
     data: { firstName: "Alice", lastName: "Peeters", email: "alice@student.be" },
   });
@@ -17,8 +14,6 @@ async function main() {
   const u2 = await prisma.user.create({
     data: { firstName: "Bilal", lastName: "El Amrani", email: "bilal@student.be" },
   });
-
-  console.log('✓ Created 2 users');
 
   const listings = [
     { title: "iPhone 13 - good condition", description: "Battery 88%, includes case.", price: 420, zip: "1000", city: "Brussels", userId: u1.id },
@@ -32,8 +27,7 @@ async function main() {
     await prisma.listing.create({ data: l });
   }
 
-  console.log('✓ Created 5 listings');
-  console.log('Database seeded successfully! 🌱');
+  console.log('Seeding complete');
 }
 
 main()

@@ -4,6 +4,7 @@ import { usersRouter } from "./routes/users.routes.js";
 import { listingsRouter } from "./routes/listings.routes.js";
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -67,6 +68,5 @@ app.get("/", (req, res) => {
 app.use("/users", usersRouter);
 app.use("/listings", listingsRouter);
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`✅ API running on http://localhost:${port}`));
+app.listen(port, () => console.log(`Server running on http://localhost:${port}`));
 

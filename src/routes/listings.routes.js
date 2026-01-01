@@ -5,11 +5,10 @@ export const listingsRouter = express.Router();
 
 function validateListing(body) {
   const errors = [];
-
   const { title, description, price, city, zip, userId } = body;
 
-  if (!title || typeof title !== "string" || title.trim() === "") errors.push("title is required");
-  if (!description || typeof description !== "string" || description.trim() === "") errors.push("description is required");
+  if (!title || title.trim() === "") errors.push("title is required");
+  if (!description || description.trim() === "") errors.push("description is required");
 
   if (price === undefined || price === null || Number.isNaN(Number(price))) {
     errors.push("price must be a number");
@@ -17,17 +16,14 @@ function validateListing(body) {
     errors.push("price must be >= 0");
   }
 
-  if (!city || typeof city !== "string" || city.trim() === "") errors.push("city is required");
-  if (!zip || typeof zip !== "string" || zip.trim() === "") errors.push("zip is required");
+  if (!city || city.trim() === "") errors.push("city is required");
+  if (!zip || zip.trim() === "") errors.push("zip is required");
 
-  if (userId === undefined || userId === null || Number.isNaN(Number(userId))) {
-    errors.push("userId must be a number");
-  }
+  if (!userId || isNaN(userId)) errors.push("userId is required");
 
   return errors;
 }
 
-// GET /listings?limit=10&offset=0&q=iphone
 listingsRouter.get("/", async (req, res) => {
   const limit = req.query.limit ? Math.min(Number(req.query.limit), 50) : 20;
   const offset = req.query.offset ? Number(req.query.offset) : 0;
@@ -44,7 +40,7 @@ listingsRouter.get("/", async (req, res) => {
       }
     : {};
 
-  const [items, total] = await Promise.all([
+  const [listings, total] = await Promise.all([
     prisma.listing.findMany({
       where,
       include: { user: true },
@@ -57,11 +53,10 @@ listingsRouter.get("/", async (req, res) => {
 
   res.json({
     meta: { total, limit, offset, q },
-    items,
+    data: listings,
   });
 });
 
-// GET /listings/:id
 listingsRouter.get("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const listing = await prisma.listing.findUnique({ where: { id }, include: { user: true } });
@@ -69,7 +64,6 @@ listingsRouter.get("/:id", async (req, res) => {
   res.json(listing);
 });
 
-// POST /listings
 listingsRouter.post("/", async (req, res) => {
   const errors = validateListing(req.body);
   if (errors.length) return res.status(400).json({ errors });
@@ -91,7 +85,6 @@ listingsRouter.post("/", async (req, res) => {
   }
 });
 
-// PUT /listings/:id
 listingsRouter.put("/:id", async (req, res) => {
   const id = Number(req.params.id);
   const errors = validateListing(req.body);
@@ -114,7 +107,6 @@ listingsRouter.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /listings/:id
 listingsRouter.delete("/:id", async (req, res) => {
   const id = Number(req.params.id);
 
