@@ -1,22 +1,21 @@
-# 🛍️ Student Marketplace API
+# Student Marketplace API
 
-Een Node.js REST API voor het delen en verkopen van studiedingen. Een standalone applicatie die volledig onafhankelijk is met eigen SQLite database.
+A Node.js REST API for a student marketplace platform. This is a standalone application with its own SQLite database.
 
-## ✨ Features
+## Features
 
-- **User Management**: CRUD operations voor users
-- **Listings**: CRUD operations met search en pagination
-- **Validatie**: Robust validatie voor alle inputs
-- **Database**: SQLite met Prisma ORM
-- **API Docs**: HTML documentatie van alle endpoints
+- User Management: Complete CRUD operations
+- Listings: CRUD operations with search and pagination
+- Input Validation: Required fields, type checking, and format validation
+- Database: SQLite with Prisma ORM
+- API Documentation: HTML documentation page at root endpoint
 
-## 🚀 Quick Start
+## Requirements
 
-### Prerequisites
 - Node.js 20+
 - npm
 
-### Installation
+## Installation
 
 ```bash
 # 1. Clone the repository
@@ -39,31 +38,31 @@ npm run db:seed
 npm run dev
 ```
 
-**Server runs on:** `http://localhost:3000`
+Server runs on: `http://localhost:3000`
 
-### Available Scripts
+## Available Commands
 
 ```bash
-npm run dev          # Start development server with nodemon (port 3000)
+npm run dev          # Start development server with nodemon
 npm start            # Start production server
 npm run db:migrate   # Run Prisma migrations
 npm run db:seed      # Populate database with test data
-npm run db:studio    # Open Prisma Studio (database GUI)
+npm run db:studio    # Open Prisma Studio
 ```
 
-## 📚 API Endpoints
+## API Endpoints
 
 ### Users
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/users` | Get all users |
-| GET | `/users/:id` | Get user by ID (includes listings) |
+| GET | `/users` | Retrieve all users |
+| GET | `/users/:id` | Retrieve user by ID (includes listings) |
 | POST | `/users` | Create new user |
 | PUT | `/users/:id` | Update user |
 | DELETE | `/users/:id` | Delete user (cascades to listings) |
 
-**Create/Update User Body:**
+**Request Body (POST/PUT):**
 ```json
 {
   "firstName": "Alice",
@@ -76,20 +75,20 @@ npm run db:studio    # Open Prisma Studio (database GUI)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/listings` | Get listings with pagination/search |
-| GET | `/listings/:id` | Get listing by ID |
+| GET | `/listings` | Retrieve listings with pagination and search |
+| GET | `/listings/:id` | Retrieve listing by ID |
 | POST | `/listings` | Create new listing |
 | PUT | `/listings/:id` | Update listing |
 | DELETE | `/listings/:id` | Delete listing |
 
-**Query Parameters for GET /listings:**
+**Query Parameters (GET /listings):**
 - `limit` (default: 20, max: 50) - Items per page
-- `offset` (default: 0) - Skip items
-- `q` - Search in title, description, city, zip
+- `offset` (default: 0) - Items to skip
+- `q` - Search query (searches in title, description, city, zip)
 
 **Example:** `GET /listings?limit=10&offset=0&q=Brussels`
 
-**Create/Update Listing Body:**
+**Request Body (POST/PUT):**
 ```json
 {
   "title": "iPhone 13",
@@ -101,152 +100,105 @@ npm run db:studio    # Open Prisma Studio (database GUI)
 }
 ```
 
-## ✅ Validation Rules
+## Validation Rules
 
-**Users:**
-- firstName/lastName: Required, no numbers allowed
-- email: Required, valid format, unique
+### Users
+- firstName/lastName: Required, cannot contain numbers
+- email: Required, must be valid format, must be unique
 
-**Listings:**
-- title: Required, non-empty
-- description: Required, non-empty
-- price: Required, must be a number ≥ 0
-- city: Required, non-empty
-- zip: Required, non-empty
+### Listings
+- title: Required
+- description: Required
+- price: Required, must be a number greater than or equal to 0
+- city: Required
+- zip: Required
 - userId: Required, must reference existing user
 
-## 🗄️ Database
-
-Uses SQLite with Prisma ORM. Database file location: `./prisma/dev.db`
-
-### Schema
+## Database Schema
 
 **User**
-- id (Int, PK, Auto)
+- id (Integer, Primary Key, Auto-increment)
 - firstName (String)
 - lastName (String)
 - email (String, Unique)
-- createdAt (DateTime, Default: now)
+- createdAt (DateTime)
 - updatedAt (DateTime)
-- listings (Relation to Listing)
+- listings (Relation)
 
 **Listing**
-- id (Int, PK, Auto)
+- id (Integer, Primary Key, Auto-increment)
 - title (String)
 - description (String)
 - price (Float)
 - city (String)
 - zip (String)
-- userId (Int, FK to User)
-- user (Relation to User)
-- createdAt (DateTime, Default: now)
+- userId (Integer, Foreign Key)
+- user (Relation)
+- createdAt (DateTime)
 - updatedAt (DateTime)
 
-## 🛠️ Tech Stack
+## Technology Stack
 
-- **Runtime**: Node.js 20+ (ES Modules)
-- **Framework**: Express 5
-- **Database**: SQLite
-- **ORM**: Prisma 5
-- **Middleware**: CORS
-- **Dev Tools**: Nodemon
+- Node.js 20+ (ES Modules)
+- Express 5
+- SQLite
+- Prisma 5
+- CORS middleware
+- Nodemon (development)
 
-## 📝 Project Structure
+## Project Structure
 
 ```
 .
 ├── src/
-│   ├── server.js              # Main Express app
-│   ├── prisma.js              # Prisma client instance
+│   ├── server.js
+│   ├── prisma.js
 │   └── routes/
-│       ├── users.routes.js    # User endpoints
-│       └── listings.routes.js # Listing endpoints
+│       ├── users.routes.js
+│       └── listings.routes.js
 ├── prisma/
-│   ├── schema.prisma          # Database schema
-│   ├── seed.js                # Seed script
-│   ├── dev.db                 # SQLite database (generated)
-│   └── migrations/            # Migration history
+│   ├── schema.prisma
+│   ├── seed.js
+│   ├── dev.db (generated)
+│   └── migrations/
+├── .env
+├── .env.example
+├── .gitignore
 ├── package.json
 └── README.md
 ```
 
-## 📦 Dependencies
+## Environment Configuration
 
-- **express**: Web framework
-- **cors**: CORS middleware
-- **@prisma/client**: Database client
+Create a `.env` file in the root directory:
 
-## 🔧 Development Dependencies
-
-- **prisma**: ORM CLI
-- **nodemon**: Auto-reload development server
-
-## 🌱 Seeding Database
-
-The seed script creates:
-- 2 test users (Alice Peeters, Bilal El Amrani)
-- 5 test listings (iPhone, MacBook, Basketball shoes, Desk chair, Calculator)
-
-Run with: `npm run db:seed`
-
-## 📄 Environment Variables
-
-Create `.env` file:
 ```
 DATABASE_URL="file:./dev.db"
 PORT=3000
 ```
 
-## 🎯 Checklist (Requirements)
+## Seeding
 
-- ✅ CRUD operations (Users & Listings)
-- ✅ Validatie (required fields, type checking, regex)
-- ✅ Pagination (limit + offset)
-- ✅ Search endpoint (q parameter on multiple fields)
-- ✅ Root docs page (HTML at /)
-- ✅ Aparte SQLite database
-- ✅ Prisma migrations & seed
-- ✅ .gitignore & README
-- ✅ ES Modules (modern syntax)
+The seed script creates:
+- 5 users (Alice Peeters, Bilal El Amrani, Emma Janssens, Lucas Vermeulen, Sophie Dubois)
+- 20 listings across various categories and Belgian cities
 
-## 🚫 Ignored Files
+Run: `npm run db:seed`
 
-`.gitignore` excludes:
-- `node_modules/`
-- `.env` (local environment)
-- `prisma/dev.db` (local database)
-- `prisma/dev.db-journal`
+## HTTP Status Codes
 
-## 🎓 Score Boosters
+- 200: Success
+- 201: Created
+- 204: No Content (successful delete)
+- 400: Bad Request (validation error)
+- 404: Not Found
+- 500: Server Error
 
-Extra features implemented:
-- ES Modules (modern Node.js)
-- User relationships with cascade delete
-- Multi-field search (title, description, city, zip)
-- Pagination metadata in response
-- Price validation (≥ 0)
-- Case-insensitive search
-- Proper HTTP status codes (200, 201, 204, 400, 404)
-- CORS enabled
-- City + Zip fields for location
+## Development
 
-## 📞 Error Handling
-
-All endpoints return appropriate HTTP status codes:
-- `200` - Success
-- `201` - Created
-- `204` - No Content (successful delete)
-- `400` - Bad request (validation error)
-- `404` - Not found
-- `500` - Server error
-
-## 🔗 Access API
-
-Development:
-```
-http://localhost:3000           # API docs (HTML)
-http://localhost:3000/users
-http://localhost:3000/listings
-```
+Access the API at:
+- `http://localhost:3000` - API documentation (HTML)
+- `http://localhost:3000/users` - Users endpoint
+- `http://localhost:3000/listings` - Listings endpoint
 
 
