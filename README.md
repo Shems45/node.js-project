@@ -202,3 +202,11 @@ Access the API at:
 - `http://localhost:3000/listings` - Listings endpoint
 
 
+## Bronvermeldingen
+
+- Prisma documentatie: https://www.prisma.io/docs
+- Express gids: https://expressjs.com/
+- CORS middleware: https://github.com/expressjs/cors
+- Eventuele codefragmenten overgenomen van blogs/tutorials met link en korte uitleg waarom je ze gebruikte
+
+
