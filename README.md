@@ -19,7 +19,7 @@ A Node.js REST API for a student marketplace platform. This is a standalone appl
 
 ```bash
 # 1. Clone the repository
-git clone <repository-url>
+git clone https://github.com/Shems45/node.js-project
 cd node.js-project
 
 # 2. Install dependencies
