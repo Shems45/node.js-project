@@ -110,6 +110,23 @@ app.get("/", (req, res) => {
           </div>
 
           <div style="border:1px solid #ccc; padding:12px;">
+            <h3>GET /listings (with sorting)</h3>
+            <label>sort <select id="sortField" style="padding:4px;">
+              <option value="id">id</option>
+              <option value="title">title</option>
+              <option value="price" selected>price</option>
+              <option value="city">city</option>
+              <option value="createdAt">createdAt</option>
+            </select></label>
+            <label>order <select id="sortOrder" style="padding:4px;">
+              <option value="asc" selected>asc (lowest first)</option>
+              <option value="desc">desc (highest first)</option>
+            </select></label>
+            <label>limit <input id="sortLimit" type="number" value="10" min="1" max="50"></label>
+            <button onclick="doFetch('GET', '/listings?sort=' + document.getElementById('sortField').value + '&order=' + document.getElementById('sortOrder').value + '&limit=' + document.getElementById('sortLimit').value)">Sort & List</button>
+          </div>
+
+          <div style="border:1px solid #ccc; padding:12px;">
             <h3>GET /listings/:id</h3>
             <label>id <input id="getListingId" type="number" value="26" min="1"></label>
             <button onclick="doFetch('GET', '/listings/' + document.getElementById('getListingId').value)">Get Listing</button>
