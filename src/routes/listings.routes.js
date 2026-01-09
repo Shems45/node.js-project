@@ -14,6 +14,8 @@ function validateListing(body) {
     errors.push("price must be a number");
   } else if (Number(price) < 0) {
     errors.push("price must be >= 0");
+  } else if (Number(price) === 0) {
+    errors.push("price must be greater than 0");
   }
 
   if (!city || city.trim() === "") errors.push("city is required");
@@ -28,6 +30,8 @@ listingsRouter.get("/", async (req, res) => {
   const limit = req.query.limit ? Math.min(Number(req.query.limit), 50) : 20;
   const offset = req.query.offset ? Number(req.query.offset) : 0;
   const q = req.query.q ? String(req.query.q).trim() : null;
+  const sort = req.query.sort ? String(req.query.sort).trim() : "id";
+  const order = (req.query.order === "asc") ? "asc" : "desc";
 
   const where = q
     ? {
@@ -40,11 +44,14 @@ listingsRouter.get("/", async (req, res) => {
       }
     : {};
 
+  const validSortFields = ["id", "title", "price", "city", "createdAt"];
+  const orderBy = validSortFields.includes(sort) ? { [sort]: order } : { id: "desc" };
+
   const [listings, total] = await Promise.all([
     prisma.listing.findMany({
       where,
       include: { user: true },
-      orderBy: { id: "desc" },
+      orderBy,
       take: limit,
       skip: offset,
     }),
@@ -52,7 +59,7 @@ listingsRouter.get("/", async (req, res) => {
   ]);
 
   res.json({
-    meta: { total, limit, offset, q },
+    meta: { total, limit, offset, q, sort, order },
     data: listings,
   });
 });

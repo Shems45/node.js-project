@@ -23,6 +23,8 @@ function validateUser(body) {
     errors.push("email is required");
   } else if (!email.includes("@")) {
     errors.push("email must be valid");
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errors.push("email must be in valid format (e.g., user@example.com)");
   }
 
   return errors;

@@ -85,8 +85,10 @@ npm run db:studio    # Open Prisma Studio
 - `limit` (default: 20, max: 50) - Items per page
 - `offset` (default: 0) - Items to skip
 - `q` - Search query (searches in title, description, city, zip)
+- `sort` (default: id) - Sort field (id, title, price, city, createdAt)
+- `order` (default: desc) - Sort direction (asc, desc)
 
-**Example:** `GET /listings?limit=10&offset=0&q=Brussels`
+**Example:** `GET /listings?limit=10&offset=0&q=Brussels&sort=price&order=asc`
 
 **Request Body (POST/PUT):**
 ```json
@@ -104,15 +106,31 @@ npm run db:studio    # Open Prisma Studio
 
 ### Users
 - firstName/lastName: Required, cannot contain numbers
-- email: Required, must be valid format, must be unique
+- email: Required, must be unique, **must match format user@example.com** (regex validation)
 
 ### Listings
 - title: Required
 - description: Required
-- price: Required, must be a number greater than or equal to 0
+- price: Required, must be a number **greater than 0** (not just >= 0)
 - city: Required
 - zip: Required
 - userId: Required, must reference existing user
+
+## Advanced Features
+
+### 1. Sorting on Listings
+The `/listings` endpoint now supports sorting:
+- **Query parameter:** `?sort=<field>&order=<direction>`
+- **Available fields:** id, title, price, city, createdAt
+- **Order:** asc (ascending) or desc (descending, default)
+- **Example:** `GET /listings?sort=price&order=asc` - list all items by price (lowest first)
+- **Example:** `GET /listings?sort=createdAt&order=desc&limit=10` - newest listings first
+
+### 2. Advanced Email Validation
+Emails are now validated with regex pattern to ensure proper format:
+- Must contain @ symbol
+- Must have domain name and extension
+- Prevents invalid formats like "test@" or "test@.com"
 
 ## Database Schema
 
