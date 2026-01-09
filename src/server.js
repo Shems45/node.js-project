@@ -48,6 +48,15 @@ app.get("/", (req, res) => {
         <h3>GET listings with pagination + search</h3>
         <pre>/listings?limit=10&offset=0&q=brussels</pre>
 
+        <h2>Quick Demo Links</h2>
+        <ul>
+          <li><a href="/users">View all users</a></li>
+          <li><a href="/users/1">View user 1 (example)</a></li>
+          <li><a href="/listings">View all listings</a></li>
+          <li><a href="/listings/1">View listing 1 (example)</a></li>
+          <li><a href="/listings?limit=5&offset=0&q=Brussels">Search listings: Brussels (limit=5)</a></li>
+        </ul>
+
         <h3>POST/PUT Listing body</h3>
         <pre>{
   "title": "iPhone 13",
